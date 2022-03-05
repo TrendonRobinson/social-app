@@ -2,40 +2,40 @@ import { useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 import React, { useState } from "react";
 import { Form, Checkbox, Button } from "semantic-ui-react";
-
-import {useForm} from '../util/hooks'
+import { useNavigate } from "react-router-dom";
+import { useForm } from "../util/hooks";
 
 export default function Register(props) {
+    let navigate = useNavigate();
     const [errors, setErrors] = useState({});
 
-    const { onChange, onSubmit, values} = useForm(registerUser, {
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    })
+    const { onChange, onSubmit, values } = useForm(registerUser, {
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+    });
 
     const [addUser, { loading }] = useMutation(REGISTER_USER, {
         update(proxy, result) {
             console.log(result);
-            props.history.push('/')
+            navigate("/");
         },
         onError(err, test) {
-          if (err.graphQLErrors[0]) {
-            console.log(err.graphQLErrors[0], err.graphQLErrors[0].extensions.errors)
-            setErrors(err.graphQLErrors[0].extensions.errors);
-          }
+            if (err.graphQLErrors[0]) {
+                console.log(
+                    err.graphQLErrors[0],
+                    err.graphQLErrors[0].extensions.errors
+                );
+                setErrors(err.graphQLErrors[0].extensions.errors);
+            }
         },
         variables: values,
     });
 
-
-    function registerUser(){
-      addUser();
+    function registerUser() {
+        addUser();
     }
-    
-
-    
 
     return (
         <div className="form-container">

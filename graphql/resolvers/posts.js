@@ -30,8 +30,8 @@ module.exports = {
         async createPost(_, { body }, context) {
             const user = checkAuth(context);
 
-            if (body.trim() === ''){
-                throw new Error('Post body must not be empty')
+            if (body.trim() === "") {
+                throw new Error("Post body must not be empty");
             }
 
             const newPost = new Post({
@@ -42,7 +42,7 @@ module.exports = {
             });
 
             const post = await newPost.save();
-            
+
             // context.pubsub.publish('NEW_POST', {
             //     newPost: post
             // })
@@ -63,26 +63,28 @@ module.exports = {
                 throw new Error(err);
             }
         },
-        async likePost(_, { postId}, context) {
+        async likePost(_, { postId }, context) {
             const { username } = checkAuth(context);
 
             const post = await Post.findById(postId);
             if (post) {
-                if (post.likes.find(like => like.username === username)) {
+                if (post.likes.find((like) => like.username === username)) {
                     // Post already liked, unlike
-                    post.likes = post.likes.filter(like => like.username !== username)
+                    post.likes = post.likes.filter(
+                        (like) => like.username !== username
+                    );
                 } else {
                     // no liked
                     post.likes.push({
                         username,
-                        createdAt: new Date().toISOString()
-                    })
+                        createdAt: new Date().toISOString(),
+                    });
                 }
 
                 await post.save();
                 return post;
-            } else throw new UserInputError('Post not found')
-        }
+            } else throw new UserInputError("Post not found");
+        },
     },
     // Subscription: {
     //     newPost: {

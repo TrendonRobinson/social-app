@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Button, Form } from "semantic-ui-react";
 import { useMutation } from "@apollo/client";
 import gql from "graphql-tag";
@@ -12,6 +12,12 @@ function Login(props) {
     const context = useContext(AuthContext);
     const [errors, setErrors] = useState({});
 
+    useEffect(() => {
+        if (context.user) {
+            navigate('/')
+        }
+    }, [])
+    
     const { onChange, onSubmit, values } = useForm(loginUserCallback, {
         username: "",
         password: "",

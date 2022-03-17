@@ -1,18 +1,36 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu } from "semantic-ui-react";
 
+import { AuthContext } from "../context/auth";
+
 export default function MenuBar() {
+    const { user, logout } = useContext(AuthContext);
     const pathname = window.location.pathname;
-    
+
     // /login
-    const path = pathname === '/' ? 'home' : pathname.substring(1)
+    const path = pathname === "/" ? "home" : pathname.substring(1);
     const [activeItem, setActiveItem] = useState(path);
 
     const handleItemClick = (e, { name }) =>
         setActiveItem({ activeItem: name });
 
-    return (
+    const menuBar = user ? (
+        <Menu pointing secondary>
+            <Menu.Item
+                name={user.username}
+                active
+                as={Link}
+                to="/"
+            />
+            <Menu.Menu position="right">
+                <Menu.Item
+                    name="logout"
+                    onClick={logout}
+                />
+            </Menu.Menu>
+        </Menu>
+    ) : (
         <Menu pointing secondary>
             <Menu.Item
                 name="home"
@@ -21,16 +39,6 @@ export default function MenuBar() {
                 as={Link}
                 to="/"
             />
-            {/* <Menu.Item
-                name="messages"
-                active={activeItem === "messages"}
-                onClick={handleItemClick}
-            />
-            <Menu.Item
-                name="friends"
-                active={activeItem === "friends"}
-                onClick={handleItemClick}
-            /> */}
             <Menu.Menu position="right">
                 <Menu.Item
                     name="login"
@@ -38,7 +46,7 @@ export default function MenuBar() {
                     onClick={handleItemClick}
                     as={Link}
                     to="/login"
-                    />
+                />
                 <Menu.Item
                     name="register"
                     active={activeItem === "register"}
@@ -48,5 +56,7 @@ export default function MenuBar() {
                 />
             </Menu.Menu>
         </Menu>
-    );
+    )
+
+    return menuBar
 }
